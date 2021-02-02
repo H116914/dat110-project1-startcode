@@ -21,7 +21,7 @@ public class RPCClient {
 		
 		// TODO: connect using the underlying messaging layer connection
 		
-	    throw new UnsupportedOperationException(TODO.method());
+		msgclient.connect();
 			
 	}
 	
@@ -29,7 +29,7 @@ public class RPCClient {
 		
 		// TODO: disconnect/close the underlying messaging connection
 		
-		throw new UnsupportedOperationException(TODO.method());
+		connection.close();
 		
 	}
 	
@@ -38,7 +38,6 @@ public class RPCClient {
 		byte[] rpcreply;
 		
 		/* TODO: 
-		
 		Make a remote call on the RPC server by sending the RPC request message
 		and receive an RPC reply message
 		
@@ -47,9 +46,15 @@ public class RPCClient {
 		
 		*/
 		
-		if (true) {
-			throw new UnsupportedOperationException(TODO.method());
-		}
+		
+		Message request = new Message(rpcrequest);
+		Message received = new Message();
+		
+		connection.send(request);
+		received = connection.receive();
+		rpcreply = received.getData();
+		
+	
 		
 		return rpcreply;
 		
