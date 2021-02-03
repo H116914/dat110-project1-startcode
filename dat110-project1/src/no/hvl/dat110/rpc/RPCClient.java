@@ -44,17 +44,16 @@ public class RPCClient {
 		rpcrequest is the marshalled rpcrequest from the client-stub
 		rpctreply is the rpcreply to be unmarshalled by the client-stub
 		
-		*/
-		
+		*/	
 		
 		Message request = new Message(rpcrequest);
+		
 		Message received = new Message();
 		
 		connection.send(request);
+		
 		received = connection.receive();
 		rpcreply = received.getData();
-		
-	
 		
 		return rpcreply;
 		

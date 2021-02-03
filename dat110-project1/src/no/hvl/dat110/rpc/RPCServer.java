@@ -51,9 +51,16 @@ public class RPCServer {
 		   received = connection.receive();
 		   
 		   rpcid = received.getData()[0];
-//		   
-//		   RPCImpl new 
-//		   services.
+		   
+		   
+		   // veldig usikker på dette
+		   services.get(rpcid).invoke(received.getData());
+		   
+		   Message reply = new Message(received.getData());
+		   connection.send(reply);
+		   
+		   
+		   
 		   if (rpcid == RPCCommon.RPIDSTOP) {
 			   stop = true;
 		   }
