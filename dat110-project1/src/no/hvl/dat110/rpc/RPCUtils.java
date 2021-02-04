@@ -1,12 +1,9 @@
 package no.hvl.dat110.rpc;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-
-import no.hvl.dat110.TODO;
+import java.nio.charset.StandardCharsets;
 
 public class RPCUtils {
 
@@ -15,22 +12,20 @@ public class RPCUtils {
 	// data bytearrays and return byte arrays is according to the 
 	// RPC message syntax [rpcid,parameter/return value]
 	
-	public static byte[] marshallString(byte rpcid, String str) throws IOException {
+	public static byte[] marshallString(byte rpcid, String str) {
 		
 		// TODO: marshall RPC identifier and string into byte array
 		
 		byte[] encoded;
 
-		byte[] strBytes = str.getBytes();
-		encoded = new byte[] {rpcid};
+		byte[] strByte = str.getBytes();
 		
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		outputStream.write(encoded);
-		outputStream.write(strBytes);
+		encoded = new byte[strByte.length+1];
+		encoded[0] = rpcid;
+		for(int i = 1; i < strByte.length+1; i++) {
+			encoded[i] = strByte[i-1];
+		}
 		
-		encoded	= outputStream.toByteArray();
-		
-
 		return encoded;
 	}
 
@@ -38,10 +33,8 @@ public class RPCUtils {
 
 		// TODO: unmarshall String contained in data into decoded
 		
-		String decoded;
-
-		byte[] newData = Arrays.copyOfRange(data, 1, data.length);
-		decoded = new String(newData);
+		byte[] dataUtenID = fjernMetodeByte(data);
+		String decoded = new String(dataUtenID, StandardCharsets.UTF_8);
 
 		return decoded;
 	}
@@ -88,13 +81,17 @@ public class RPCUtils {
 
 	}
 
-	public static byte[] marshallInteger(byte rpcid, int x) throws IOException {
+	public static byte[] marshallInteger(byte rpcid, int x) {
 
 		byte[] encoded;
 
-		Integer a = x; 
+		byte[] intByte = BigInteger.valueOf(x).toByteArray();
 		
-		encoded = new byte[] {rpcid, a.byteValue()};
+		encoded = new byte[intByte.length+1];
+		encoded[0] = rpcid;
+		for(int i = 1; i < intByte.length+1; i++) {
+			encoded[i] = intByte[i-1];
+		}
 		
 		return encoded;
 	}
@@ -102,13 +99,40 @@ public class RPCUtils {
 	public static int unmarshallInteger(byte[] data) {
 
 		int decoded;
-
-		// TODO: unmarshall integer contained in data
-
-		byte[] bytes = Arrays.copyOfRange(data, 1, data.length);
 		
-		decoded = new BigInteger(1,bytes).intValue();
+		byte[] dataUtenID = fjernMetodeByte(data);
+		decoded = ByteBuffer.wrap(addPadding(dataUtenID)).getInt();
+		
 		return decoded;
 
+	}
+	
+	private static byte[] addPadding(byte[] intBytes) {
+		int nodvendigLengde = 4;
+		byte[] paddedBytes;
+		
+		if(intBytes.length < nodvendigLengde) {
+			paddedBytes = new byte[nodvendigLengde];
+			
+			for(int i = 0; i < nodvendigLengde-intBytes.length; i++) {
+				paddedBytes[i] = 0;
+			}
+			for(int i = nodvendigLengde-intBytes.length; i < nodvendigLengde; i++) {
+				paddedBytes[i] = intBytes[i-(nodvendigLengde-intBytes.length)];
+			}
+		}else {
+			paddedBytes = intBytes;
+		}
+		return paddedBytes;
+	}
+
+	private static byte[] fjernMetodeByte(byte[] dataInn) {
+		byte[] dataUt = new byte[dataInn.length-1];
+		
+		for(int i = 0; i < dataUt.length; i++) {
+			dataUt[i] = dataInn[i+1];
+		}
+		
+		return dataUt;
 	}
 }
