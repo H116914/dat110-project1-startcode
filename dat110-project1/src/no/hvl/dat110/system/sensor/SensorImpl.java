@@ -1,5 +1,7 @@
 package no.hvl.dat110.system.sensor;
 
+import java.io.IOException;
+
 import no.hvl.dat110.rpc.RPCImpl;
 import no.hvl.dat110.rpc.RPCUtils;
 
@@ -24,7 +26,13 @@ public class SensorImpl implements RPCImpl {
 		
 		byte rpcid = request[0];
 		
-		byte[] reply = RPCUtils.marshallInteger(rpcid,temp); 
+		byte[] reply = null;
+		try {
+			reply = RPCUtils.marshallInteger(rpcid,temp);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		
 		return reply;
 	}
