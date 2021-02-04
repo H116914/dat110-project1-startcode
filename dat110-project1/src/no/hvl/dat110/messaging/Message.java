@@ -34,7 +34,7 @@ public class Message {
 	public void decapsulate(byte[] received) {
 		payloadLengde = received[0];
 		payload=new byte[payloadLengde];
-		System.out.println(payloadLengde);
+
 		for(int i=0; i<payloadLengde; i++) {
 			payload[i] = received[i+1];
 		}
