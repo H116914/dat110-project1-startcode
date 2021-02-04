@@ -50,13 +50,15 @@ public class RPCServer {
 		   Message received = new Message();
 		   received = connection.receive();
 		   
-		   rpcid = received.getData()[0];
+		   rpcid = (int)received.getData()[0];
 		   
 		   
 		   // veldig usikker på dette
-		   services.get(rpcid).invoke(received.getData());
+		   RPCImpl method = services.get(rpcid);
 		   
-		   Message reply = new Message(received.getData());
+		   byte[] replyData = method.invoke(received.getData());
+		   
+		   Message reply = new Message(replyData);
 		   connection.send(reply);
 		   
 		   
