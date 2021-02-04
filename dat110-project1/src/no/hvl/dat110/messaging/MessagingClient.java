@@ -18,15 +18,15 @@ public class MessagingClient {
 	// connect to messaging server
 	public Connection connect() {
 
-		Connection connection =null;
+		Connection connection = null;
+		Socket clientSocket;	
+		
 		try {
-			Socket clientSocket = new Socket(server, port);
+			clientSocket = new Socket(server, port);
 			connection = new Connection(clientSocket);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
